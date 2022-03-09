@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final player = AudioCache(fixedPlayer: AudioPlayer());
   int checkButton = 0;
-  final bool _visible = true;
+  bool _visible = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     }),
                 Text("${selectedTime.hour}:${selectedTime.minute}"),
                 Visibility(
-                  visible: _visible,
+                  visible: true,
                   child: ElevatedButton(
                       onPressed: () async {
                         player.fixedPlayer?.stop();
@@ -106,6 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         selectedTime = timeOfDay;
       });
+      checkButton = 0;
     }
 
     const tenSec = Duration(seconds: 10);
@@ -134,6 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
           //fireAlarm(player));
           fireAlarm(player));
       checkButton = 1;
+      _visible = true;
     }
   }
 }
