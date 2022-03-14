@@ -5,16 +5,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+/* import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:typed_data';
-
+ */
 void main() async {
   runApp(MyApp());
   await AndroidAlarmManager.initialize();
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -53,28 +57,39 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Image.asset('assets/images/lino.jpg'),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            //crossAxisAlignment: CrossAxisAlignment.center,
+            //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                  icon: const Icon(
-                    Icons.access_alarm_rounded,
-                    size: 100,
-                  ),
-                  /* padding: const EdgeInsets.all(50),
-                  alignment: Alignment.center,
-                  tooltip: 'Increase volume by 10',
-                   */
-                  onPressed: () async {
-                    _selectTime(context);
-                  }),
+              Expanded(
+                child: IconButton(
+                    icon: const Icon(
+                      Icons.access_alarm_rounded,
+                      size: 80,
+                    ),
+                    padding: const EdgeInsets.all(20),
+                    alignment: Alignment.center,
+                    tooltip: 'Metti la sveglia Ruoppolo!',
+                    onPressed: () async {
+                      _selectTime(context);
+                    }),
+              ),
             ],
+          ),
+          const SizedBox(
+            width: 32.0,
+            height: 32.0,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("${selectedTime.hour}:${selectedTime.minute}"),
+              Expanded(
+                child: Text(
+                  " ${selectedTime.hour}:${selectedTime.minute}",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 25),
+                ),
+              ),
             ],
           ),
           Row(
@@ -90,6 +105,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: ElevatedButton.styleFrom(
                         primary: Colors.green,
                         shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                              width: 5.0,
+                              color: Colors.white,
+                            ),
                             borderRadius: BorderRadius.circular(360)),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 60, vertical: 60),
@@ -107,6 +126,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 style: ElevatedButton.styleFrom(
                     primary: Colors.red,
+                    side: const BorderSide(
+                      width: 5.0,
+                      color: Colors.white,
+                    ),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(360)),
                     padding: const EdgeInsets.symmetric(
@@ -117,6 +140,16 @@ class _MyHomePageState extends State<MyHomePage> {
               )),
             ],
           ),
+          Row(
+            children: const [
+              Expanded(
+                  child: Text(
+                "Circuito Z di Rigore",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 25),
+              )),
+            ],
+          )
         ],
       ),
     );
@@ -168,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 fireAlarm(player2) {
-  print('ha funzioneo ${DateTime.now()} +2');
+  // print('ha funzioneo ${DateTime.now()} +2');
   //  String audioasset = "assets/sounds/svegliolino.mp3";
 
   player2.play('sounds/svegliolino.mp3');
@@ -179,7 +212,7 @@ extension TimeOfDayExtension on TimeOfDay {
     Random rnd;
     int min = 1;
     int max = 5;
-    rnd = new Random();
+    rnd = Random();
     minute = minute + min + rnd.nextInt(max - min);
     if (minute >= 60) {
       minute = minute - 60;
@@ -189,50 +222,3 @@ extension TimeOfDayExtension on TimeOfDay {
     return replacing(hour: hour, minute: minute);
   }
 }
- //FINO A QUA
-      /* Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-                child: ListView(
-              children: [
-                IconButton(
-                    icon: const Icon(Icons.access_alarm_rounded),
-                    tooltip: 'Increase volume by 10',
-                    onPressed: () async {
-                      _selectTime(context);
-                    }),
-                Text("${selectedTime.hour}:${selectedTime.minute}"),
-              
-              
-                Visibility(
-                  visible: true,
-                  child: ElevatedButton(
-                      onPressed: () async {
-                        player.fixedPlayer?.stop();
-                        checkButton = 1;
-                      },
-                      child: const Text("Stop")),
-                ),
-                Visibility(
-                  visible: _visible,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      player.fixedPlayer?.stop();
-                      checkButton = 0;
-                      selectedTime = selectedTime.add(
-                          selectedTime.hour, selectedTime.minute);
-
-                      print(
-                          'SNOOZE ${selectedTime.hour}, ${selectedTime.minute}');
-                      //   selectedTime.now().add
-                    },
-                    child: const Text('Snooze'),
-                  ),
-                ),
-              ],
-            )),
-          ],
-        ),
-      ) ,*/
