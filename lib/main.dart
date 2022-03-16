@@ -5,15 +5,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
+//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:svegliolino2/notifications.dart';
+//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
 /* import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:typed_data';
  */
+
 void main() async {
-  runApp(MyApp());
+  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init();
   await AndroidAlarmManager.initialize();
+  tz.initializeTimeZones();
 }
 
 class MyApp extends StatelessWidget {
@@ -46,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final player = AudioCache(fixedPlayer: AudioPlayer());
   int checkButton = 0;
+  NotificationService _notificationService = NotificationService();
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                   child: ElevatedButton(
                 onPressed: () async {
+                  //  await _notificationService.scheduleNotifications();
                   player.fixedPlayer?.stop();
                   checkButton = 0;
                   selectedTime =
@@ -194,11 +202,16 @@ class _MyHomePageState extends State<MyHomePage> {
           DateTime(selectedTime.hour, selectedTime.minute),
           alarmId,
           //fireAlarm(player));
-          fireAlarm(player));
+          fireAlarm(player),
+          // rescheduleOnReboot: true,
+          allowWhileIdle: true);
       checkButton = 1;
     }
   }
 }
+
+/* const NotificationDetails platformChannelSpecifics = 
+  NotificationDetails(android: androidPlatformChannelSpecifics); */
 
 fireAlarm(player2) {
   // print('ha funzioneo ${DateTime.now()} +2');
@@ -213,7 +226,7 @@ extension TimeOfDayExtension on TimeOfDay {
     int min = 1;
     int max = 5;
     rnd = Random();
-    minute = minute + min + rnd.nextInt(max - min);
+    minute = minute + rnd.nextInt(max - min);
     if (minute >= 60) {
       minute = minute - 60;
       hour = hour + 1;
